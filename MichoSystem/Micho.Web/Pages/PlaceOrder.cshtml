@@ -1,0 +1,126 @@
+﻿@page
+@model Micho.Web.Pages.PlaceOrderModel
+@{
+    ViewData["Title"] = "Đặt hàng";
+}
+
+<h1>Đặt Kem MICHO</h1>
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <form id="orderForm">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Thông tin khách hàng</h4>
+                </div>
+                <div class="card-body">
+                    <div class="form-group mb-3">
+                        <label for="customerName" class="control-label">Họ và Tên</label>
+                        <input id="customerName" class="form-control" required />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="customerAddress" class="control-label">Địa chỉ</label>
+                        <input id="customerAddress" class="form-control" required />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="customerContact" class="control-label">Số điện thoại</label>
+                        <input id="customerContact" class="form-control" required />
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h4>Chọn sản phẩm</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Tên sản phẩm</th>
+                                <th>Giá</th>
+                                <th>Số lượng</th>
+                            </tr>
+                        </thead>
+                        <tbody id="iceCreamList">
+                            @foreach (var iceCream in Model.IceCreamList)
+                            {
+                                <tr data-id="@iceCream.IceCreamId">
+                                    <td>@iceCream.Name</td>
+                                    <td>@iceCream.Price.ToString("N0") VNĐ</td>
+                                    <td>
+                                        <input class="form-control quantity-input" type="number" min="0" value="0" />
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        @if (!Model.IceCreamList.Any())
+                        {
+                            <div class="alert alert-danger">Không thể tải danh sách sản phẩm. Vui lòng đảm bảo dự án API (Micho.API) đang chạy trên đúng port và không có lỗi.</div>
+                        }
+                </div>
+            </div>
+
+            <div class="form-group mt-4">
+                <button type="submit" class="btn btn-primary btn-lg">Xác nhận đơn hàng</button>
+            </div>
+        </form>
+        <div id="result" class="mt-3"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('orderForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const customerName = document.getElementById('customerName').value;
+            const customerAddress = document.getElementById('customerAddress').value;
+            const customerContact = document.getElementById('customerContact').value;
+
+            let items = [];
+            document.querySelectorAll('#iceCreamList tr').forEach(row => {
+                const quantity = row.querySelector('.quantity-input').value;
+                if (parseInt(quantity, 10) > 0) {
+                    items.push({
+                        iceCreamId: parseInt(row.dataset.id, 10),
+                        quantity: parseInt(quantity, 10)
+                    });
+                }
+            });
+
+            const orderData = {
+                customerName: customerName,
+                customerAddress: customerAddress,
+                customerContact: customerContact,
+                items: items
+            };
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="alert alert-info">Đang gửi đơn hàng...</div>';
+
+            // Sửa lại cho đúng port của API là 7281
+            fetch('https://localhost:7281/api/orders', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderData),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    return response.text().then(text => { throw new Error('Gửi đơn hàng thất bại: ' + text) });
+                })
+                .then(data => {
+                    resultDiv.innerHTML = `<div class="alert alert-success">Đặt hàng thành công! Mã đơn hàng của bạn là: ${data.orderId}</div>`;
+                    document.getElementById('orderForm').reset();
+                    document.querySelectorAll('.quantity-input').forEach(input => input.value = 0);
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+                });
+        });
+    </script>
+}

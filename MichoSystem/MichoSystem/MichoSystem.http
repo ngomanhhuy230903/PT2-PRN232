@@ -1,0 +1,6 @@
+@MichoSystem_HostAddress = http://localhost:5208
+
+GET {{MichoSystem_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

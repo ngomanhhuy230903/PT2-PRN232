@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34916.146
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Micho.API", "Micho.API\Micho.API.csproj", "{A0C48814-70BD-44E3-986A-B9A6F009269A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Micho.Web", "Micho.Web\Micho.Web.csproj", "{1A0427C3-8DD2-40FE-855F-6926FFE7D7EC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A0C48814-70BD-44E3-986A-B9A6F009269A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0C48814-70BD-44E3-986A-B9A6F009269A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0C48814-70BD-44E3-986A-B9A6F009269A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0C48814-70BD-44E3-986A-B9A6F009269A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A0427C3-8DD2-40FE-855F-6926FFE7D7EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A0427C3-8DD2-40FE-855F-6926FFE7D7EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A0427C3-8DD2-40FE-855F-6926FFE7D7EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A0427C3-8DD2-40FE-855F-6926FFE7D7EC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AF600888-D86B-4A9F-8A20-BF15B3A2E780}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,123 @@
+﻿@page
+@model Micho.Web.Pages.Reports.AnalyticsModel
+@{
+    ViewData["Title"] = "Thống kê";
+}
+
+<style>
+    .chart-container {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+        height: 300px;
+        width: 100%;
+        border-left: 2px solid #ccc;
+        border-bottom: 2px solid #ccc;
+        padding: 10px;
+    }
+
+    .chart-bar {
+        width: 3%;
+        background-color: #0d6efd;
+        text-align: center;
+        color: white;
+        position: relative;
+        transition: height 0.3s ease-in-out;
+    }
+
+        .chart-bar .hour-label {
+            position: absolute;
+            bottom: -25px;
+            width: 100%;
+            text-align: center;
+            color: #333;
+            font-size: 12px;
+        }
+
+        .chart-bar .count-label {
+            position: absolute;
+            top: -20px;
+            width: 100%;
+            text-align: center;
+            color: #333;
+            font-size: 12px;
+            font-weight: bold;
+        }
+</style>
+
+<h1>Thống kê & Phân tích</h1>
+<hr />
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="get">
+            <div class="row align-items-end">
+                <div class="col-md-4">
+                    <label asp-for="StartDate">Từ ngày</label>
+                    <input asp-for="StartDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="EndDate">Đến ngày</label>
+                    <input asp-for="EndDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Lọc</button>
+                </div>
+                <div class="col-md-2">
+                    <a asp-page="/Reports/Analytics" class="btn btn-secondary w-100">Xem toàn bộ</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model.AnalyticsData != null)
+{
+    <div class="row">
+        <div class="col-lg-5">
+            <h3>Top 10 sản phẩm bán chạy</h3>
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Số lượng đã bán</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int rank = 1;
+                    }
+                    @foreach (var product in Model.AnalyticsData.BestSellingProducts)
+                    {
+                        <tr>
+                            <td>@(rank++)</td>
+                            <td>@product.IceCreamName</td>
+                            <td>@product.TotalQuantitySold</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-7">
+            <h3>Giờ cao điểm đặt hàng</h3>
+            <div class="chart-container">
+                @foreach (var hourData in Model.AnalyticsData.PeakOrderHours.OrderBy(h => h.Hour))
+                {
+                    var heightPercentage = Model.MaxOrderCount > 0 ? (double)hourData.OrderCount / Model.MaxOrderCount * 100 : 0;
+                    <div class="chart-bar" style="height: @(heightPercentage)%;">
+                        @if (hourData.OrderCount > 0)
+                        {
+                            <span class="count-label">@hourData.OrderCount</span>
+                        }
+                        <span class="hour-label">@hourData.Hour.ToString("00")h</span>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">Không có dữ liệu thống kê hoặc không thể kết nối tới API.</div>
+}

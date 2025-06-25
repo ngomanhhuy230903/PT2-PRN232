@@ -1,0 +1,6 @@
+@Micho.API_HostAddress = http://localhost:5189
+
+GET {{Micho.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

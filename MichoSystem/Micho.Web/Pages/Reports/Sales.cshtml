@@ -1,0 +1,85 @@
+﻿@page
+@model Micho.Web.Pages.Reports.SalesModel
+@{
+    ViewData["Title"] = "Báo cáo doanh thu";
+}
+
+<h1>Báo cáo doanh thu</h1>
+<hr />
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="get">
+            <div class="row align-items-end">
+                <div class="col-md-4">
+                    <label asp-for="StartDate">Từ ngày</label>
+                    <input asp-for="StartDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="EndDate">Đến ngày</label>
+                    <input asp-for="EndDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Xem báo cáo</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model.Report != null)
+{
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">Tổng doanh thu</div>
+                <div class="card-body">
+                    <h4 class="card-title">@Model.Report.TotalRevenue.ToString("N0") VNĐ</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-header">Tổng đơn hàng thành công</div>
+                <div class="card-body">
+                    <h4 class="card-title">@Model.Report.TotalOrders</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-header">Tổng sản phẩm đã bán</div>
+                <div class="card-body">
+                    <h4 class="card-title">@Model.Report.TotalItemsSold</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mt-4">Chi tiết đơn hàng (Đã hoàn thành)</h3>
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Mã đơn hàng</th>
+                <th>Ngày đặt</th>
+                <th>Khách hàng</th>
+                <th>Tổng tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model.Report.Orders)
+            {
+                <tr>
+                    <td><a asp-page="/Invoices/View" asp-route-orderId="@order.OrderId">@order.OrderId</a></td>
+                    <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@order.CustomerName</td>
+                    <td>@order.OrderTotal.ToString("N0") VNĐ</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-warning">Không có dữ liệu báo cáo cho khoảng thời gian này hoặc không thể kết nối tới API.</div>
+}
